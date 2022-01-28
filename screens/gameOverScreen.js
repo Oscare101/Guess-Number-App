@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, StyleSheet, Text, View, Image } from 'react-native'
+import { Button, StyleSheet, Text, View, Image, Dimensions } from 'react-native'
 import BodyText from '../components/bodyText'
 import MainButton from '../components/mainButton'
 import TitleText from '../components/titleText'
@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageView: {
-    width: 300,
-    height: 300,
-    borderRadius: 200,
+    width: Dimensions.get('window').width * 0.7,
+    height: Dimensions.get('window').width * 0.7,
+    borderRadius: (Dimensions.get('window').width * 0.7) / 2,
     overflow: 'hidden',
     borderWidth: 3,
     borderColor: '#000',
-    marginVertical: 30,
+    marginVertical: Dimensions.get('window').height / 40,
   },
   image: {
     width: '100%',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   resultText: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: Dimensions.get('window').height > 400 ? 20 : 16,
     marginVertical: 15,
   },
 })
