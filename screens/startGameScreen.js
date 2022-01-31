@@ -10,6 +10,7 @@ import {
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
+  SafeAreaView,
 } from 'react-native'
 import Card from '../components/card'
 import Input from '../components/input'
