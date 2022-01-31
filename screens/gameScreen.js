@@ -10,6 +10,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native'
+import { ScreenOrientaion } from 'expo'
 
 import Card from '../components/card'
 import NumberConatiner from '../components/numberContainer'
@@ -42,11 +43,23 @@ export default function GameScreen(props) {
   const initialGuess = generateRandomBetween(1, 100, props.userChoice)
   const [currentGuess, setCurrentGuess] = useState(initialGuess)
   const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()])
-
+  const [deviceWidth, setDeviceWidth] = useState(Dimensions.get('window').width)
+  const [deviceHeight, setDeviceHeight] = useState(
+    Dimensions.get('window').height
+  )
   const currentLow = useRef(1)
   const currentHigh = useRef(100)
 
   const { userChoice, onGameOver } = props //
+
+  useEffect(() => {
+    function updateLayout() {
+      setDeviceHeight(Dimensions.get('window').height)
+      setDeviceWidth(Dimensions.get('window').width)
+    }
+
+    Dimensions.addEventListener('change', updateLayout)
+  })
 
   useEffect(() => {
     if (currentGuess === userChoice) {
@@ -80,6 +93,52 @@ export default function GameScreen(props) {
       nextNumber.toString(),
       ...curPastGuesses,
     ])
+  }
+
+  if (deviceHeight < 500) {
+    return (
+      <View style={styles.screen}>
+        <Text style={DefaultStyles.bodyText}>Opponent's Guess</Text>
+
+        <View style={styles.controls}>
+          <TouchableOpacity
+            onPress={() => {
+              nextGuess('lower')
+            }}
+          >
+            <View style={styles.button}>
+              <Ionicons name="arrow-down-sharp" size={30} color="#fff" />
+              <Text style={styles.textButton}> LOWER </Text>
+            </View>
+          </TouchableOpacity>
+          <NumberConatiner>{currentGuess}</NumberConatiner>
+          <TouchableOpacity
+            onPress={() => {
+              nextGuess('greater')
+            }}
+          >
+            <View style={styles.button}>
+              <Ionicons name="arrow-up-sharp" size={30} color="#fff" />
+              <Text style={styles.textButton}>GREATER</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.listContainer}>
+          {/* <ScrollView contentContainerStyle={styles.list}>
+          {pastGuesses.map((guess, index) =>
+            renderListItem(guess, pastGuesses.length - index)
+          )}
+        </ScrollView> */}
+          <FlatList
+            keyExtractor={(item) => item}
+            data={pastGuesses}
+            renderItem={renderListItem.bind(this, pastGuesses.length)}
+            contentContainerStyle={styles.list}
+          />
+        </View>
+      </View>
+    )
   }
 
   return (
@@ -168,5 +227,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    alignItems: 'center',
   },
 })
